@@ -1,0 +1,39 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Vectors {
+  id           String     @id @default(cuid())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  vectorData   String?
+  vectorId     String?
+  document     Documents? @relation(fields: [documentId], references: [id])
+  documentId   String?
+  queriesItems Queries[]
+}
+
+model Documents {
+  id           String    @id @default(cuid())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  fileName     String?
+  filePath     String?
+  fileContent  String?
+  vectorsItems Vectors[]
+}
+
+model Queries {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  queryText    String?
+  responseText String?
+  vector       Vectors? @relation(fields: [vectorId], references: [id])
+  vectorId     String?
+}
